@@ -1,0 +1,3 @@
+[submodule "Gurimg"]
+	path = Gurimg
+	url = git@github.com:tomsimonart/Gurimg.git
