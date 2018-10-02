@@ -1,2 +1,5 @@
 # Cover-Generator
 generating album cover thanks to wikipedia, quotationspage and Flickr
+
+## installation
+```pip install -r requirements.txt```
