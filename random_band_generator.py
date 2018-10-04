@@ -6,12 +6,11 @@ author: Herrgrim0
 date: 02/10/2018
 """
 
-# api_key = u' cf8a547fe7fe1b8855ba1eb5ba37b0a5 '
-# api_secret = u' b6472fff4d399bac '
-# "https://www.flickr.com/explore/interesting/7days/"
 import requests
 import re
 import wget
+import os
+from PIL import Image, ImageFont, ImageDraw
 
 class AlbumGenerator:
     band_name = None
@@ -19,6 +18,8 @@ class AlbumGenerator:
     album_cover = None
 
     def get_band_name(self):
+        """Get title of a random wikipedia page"""
+        print("parsing band name...")
         band_name = requests.get("http://en.wikipedia.org/w/index.php?title=Special:Random&printable=yes")
         band_name = band_name.text.split("title")[1] # parse page title
         band_name = band_name.split("-")[0]
@@ -26,6 +27,8 @@ class AlbumGenerator:
         self.band_name = band_name.strip(" ")
 
     def get_album_name(self):
+        """Get random beginning of a quotation"""
+        print("parsing album name...")
         album_name = requests.get("http://www.quotationspage.com/random.php")
         album_name = album_name.text.split("quote")[-4]
         album_name = re.split("<|>", album_name)[1]
@@ -35,6 +38,8 @@ class AlbumGenerator:
         return "{} - {}".format(self.band_name, self.album_name)
 
     def get_cover(self):
+        """Download random pics on Flickr"""
+        print("search and download album cover")
         addr = requests.get("https://www.flickr.com/explore/interesting/7days")
         addr = addr.text.split("</table>")[1]
         addr = addr.split("td")[5]
@@ -47,17 +52,32 @@ class AlbumGenerator:
         r = r.split()[2]
         r = r.split("\"")[1]
         self.cover = 'http:'+ r
-        wget.download(self.cover, out=".")
+        if not os.path.exists("images"):
+            os.makedirs("images")
+
+        self.cover = wget.download(self.cover, out="./images")
+
 
     def create_album_cover(self):
-        pass
+        print("creating album cover...")
+        im = Image.open(str(self.cover))
+        name = str(self.band_name)+"-"+str(self.album_name)+'.jpg'
 
-    def get_writings(self):
+        ImageDraw.Draw(im).text((5, 5), str(self.band_name), (0, 0, 0))
+        ImageDraw.Draw(im).text((100, 100), str(self.album_name), (0, 0, 0))
+
+        im.save(str(name))
+        im.close()
+
+
+    def create(self):
         self.get_band_name()
         self.get_album_name()
         self.get_cover()
+        self.create_album_cover()
+        print("Album cover created !")
 
 if __name__ == '__main__':
     gen = AlbumGenerator()
-    gen.get_writings()
+    gen.create()
     print(gen)
