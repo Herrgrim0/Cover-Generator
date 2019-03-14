@@ -7,7 +7,7 @@ generating album cover thanks to [wikipedia][1], [quotationspage][2] and [Flickr
 3. ```pip install -r requirements.txt```
 
 # TODO:
-- add pretty font
+~~- add pretty font~~
 - text color adaptation
 - trump mode (cc mino)
 
