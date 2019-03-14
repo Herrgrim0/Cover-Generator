@@ -13,7 +13,6 @@ import os
 import random
 import zipfile
 from PIL import Image, ImageFont, ImageDraw
-from fontTools.ttLib import TTFont
 
 class AlbumGenerator:
     band_name = None
@@ -39,15 +38,10 @@ class AlbumGenerator:
         start = album_name.text.index(">", start, len(album_name.text)) + 1 # retain beginning index of quote
         end = album_name.text.index("</a>", start, len(album_name.text))
         album_name = album_name.text[start:end].split()
-        print(album_name)
+
         if len(album_name) > 4:
             album_name = album_name[0:4]
 
-        if len(album_name[4]) < 4 :
-            album_name = album_name[0:3]
-
-        print(''.join(album_name))
-        print("DEBUG")
         # re.sub(r'\W+', '', album_name[-1])
 
         self.album_name = ' '.join(album_name)
@@ -80,10 +74,11 @@ class AlbumGenerator:
     def create_album_cover(self):
         print("creating album cover...")
         im = Image.open(str(self.cover))
+        font = ImageFont.truetype(str(self.cover_font), 15)
         name = str(self.band_name)+"-"+str(self.album_name)+'.jpg'
 
-        ImageDraw.Draw(im).text((5, 5), str(self.band_name), (0, 0, 0))
-        ImageDraw.Draw(im).text((100, 100), str(self.album_name), (0, 0, 0))
+        ImageDraw.Draw(im).text((5, 5), str(self.band_name), (0, 0, 0), font=font)
+        ImageDraw.Draw(im).text((100, 100), str(self.album_name), (0, 0, 0), font=font)
 
         im.save(str(name))
         im.close()
