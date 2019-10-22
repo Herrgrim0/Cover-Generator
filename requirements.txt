@@ -10,7 +10,7 @@ olefile==0.46
 parso==0.3.1
 pexpect==4.6.0
 pickleshare==0.7.5
-Pillow==4.1.0
+Pillow==6.2.0
 prompt-toolkit==2.0.5
 ptyprocess==0.6.0
 Pygments==2.2.0
