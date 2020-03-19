@@ -5,8 +5,9 @@
         {% else %}
         <title>Random band cover generator</title>
         {% endif %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }}">
     </head>
-    <body>
-        <img src="{{ data.cover }}" alt="{{ data.title }}" />
+    <body style="background-color: #2a2a2e">
+        <img src="{{ data.cover }}" alt="{{ data.title }}" class="center" />
     </body>
 </html>
