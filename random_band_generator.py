@@ -90,7 +90,7 @@ class AlbumGenerator:
     def create_album_cover(self):
         print("creating album cover...")
         album_cover = Image.open(str(self.cover))
-        width, height = im.size
+        width, height = album_cover.size
         max_size = min(width, height)
         album_cover = album_cover.crop((0, 0, max_size, max_size))
 
@@ -105,7 +105,7 @@ class AlbumGenerator:
 
         background.save(str(self.album_url))
         background.close()
-        im.close()
+        album_cover.close()
 
     def create_background(self, cover_size):
         """ create a background 100 pixel bigger with band and title
