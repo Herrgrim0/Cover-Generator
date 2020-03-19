@@ -19,6 +19,7 @@ WIKI_URL = "http://en.wikipedia.org/w/index.php?title=Special:Random"
 QUOTATION_URL = "http://www.quotationspage.com/random.php"
 FLICKR_URL = "https://www.flickr.com/explore/interesting/7days"
 FONT_URL = "https://github.com/google/fonts/archive/master.zip"
+ROUTE = "./app/static/"
 
 
 class AlbumGenerator:
@@ -34,8 +35,12 @@ class AlbumGenerator:
         """Get title of a random wikipedia page"""
         print("parsing band name...")
         url = requests.get(WIKI_URL)
+
+        # find title tags of the pages and isolate its content,
+        # + 6 remove title (see how index() works)
         start = url.text.index("title") + 6
         end = url.text.index("<", start, len(url.text))
+
         band_name = url.text[start:end]
         band_name = band_name.split("-")[0]
         self.band_name = band_name.strip(" ")
@@ -45,13 +50,9 @@ class AlbumGenerator:
         print("parsing album name...")
         album_name = requests.get(QUOTATION_URL)
 
-        # find first quote tag occurence
+        # find quote tags and isolate its content
         start = album_name.text.index("\"/quote/")
-
-        # beginning index of quote
         start = album_name.text.index(">", start, len(album_name.text)) + 1
-
-        # ending index of quote
         end = album_name.text.index("</a>", start, len(album_name.text))
 
         album_name = album_name.text[start:end].split()
@@ -89,6 +90,7 @@ class AlbumGenerator:
 
     def create_album_cover(self):
         print("creating album cover...")
+
         album_cover = Image.open(str(self.cover))
         width, height = album_cover.size
         max_size = min(width, height)
@@ -102,8 +104,9 @@ class AlbumGenerator:
         background.paste(album_cover, offset)
 
         self.album_url = str(self.band_name)+"-"+str(self.album_name)+'.jpg'
+        to_save = ROUTE + self.album_url
 
-        background.save(str(self.album_url))
+        background.save(to_save)
         background.close()
         album_cover.close()
 
@@ -135,8 +138,8 @@ class AlbumGenerator:
            and set the member font
         """
         if not os.path.exists("fonts"):
-            os.makedirs("fonts")
-            wget.download(FONT_URL, out="./fonts")
+            os.mkdir("fonts")
+            fonts = wget.download(FONT_URL, out="./fonts")
 
         archive = zipfile.ZipFile('fonts/fonts-master.zip', 'r')
         fonts = list(filter(lambda x: ".ttf" in x, archive.namelist()))
