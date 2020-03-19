@@ -9,14 +9,14 @@ generating album cover thanks to [wikipedia][1], [quotationspage][2] and [Flickr
 5. run it ```flask run```
 
 # TODO:
-[X] add pretty font
+- [X] add pretty font
 
 ~~text color adaptation~~
 
-[X] create a website that display a new album when you reload it
-[ ] enhance website
-[ ] enhance title detection
-[ ] trump mode (cc mino)
+- [X] create a website that display a new album when you reload it
+- [ ] enhance website
+- [ ] enhance title detection
+- [ ] trump mode (cc mino)
 
 
 [1]: http://en.wikipedia.org/w/index.php?title=Special:Random&printable=yes
