@@ -1,8 +1,8 @@
 *.pyc
-images/
+images/*
 *.jpg
-ve/
-fonts/
+ve/*
+fonts/*
 # Virtualenv
 .Python
 [Bb]in
@@ -14,3 +14,7 @@ fonts/
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+
+# code editor
+.vscode/*
+
