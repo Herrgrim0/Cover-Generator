@@ -1,0 +1,12 @@
+<html>
+    <head>
+        {% if data.title %}
+        <title>{{ data.title }}</title>
+        {% else %}
+        <title>Random band cover generator</title>
+        {% endif %}
+    </head>
+    <body>
+        <img src="{{ url_for('cover', filename='data.cover') }}" alt="{{ data.title }}" />
+    </body>
+</html>
