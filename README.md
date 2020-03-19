@@ -9,8 +9,10 @@ generating album cover thanks to [wikipedia][1], [quotationspage][2] and [Flickr
 
 # TODO:
 ~~add pretty font~~
+
 ~~text color adaptation~~
 - create a website that display a new album when you access it
+- enhance title detection
 - trump mode (cc mino)
 
 
