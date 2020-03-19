@@ -14,7 +14,7 @@ generating album cover thanks to [wikipedia][1], [quotationspage][2] and [Flickr
 ~~text color adaptation~~
 
 - [X] create a website that display a new album when you reload it
-- [ ] enhance website
+- [X] enhance website
 - [ ] enhance title detection
 - [ ] trump mode (cc mino)
 
