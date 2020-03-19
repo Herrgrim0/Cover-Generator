@@ -2,6 +2,7 @@ from flask import render_template
 from app import app
 from .random_band_generator import AlbumGenerator
 
+
 @app.route('/')
 @app.route('/index')
 def index():
