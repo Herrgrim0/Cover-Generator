@@ -5,6 +5,7 @@ generating album cover thanks to [wikipedia][1], [quotationspage][2] and [Flickr
 1. setup a virtualenv
 2. activate virtualenv (`source VIRTUALENV_DIRECTORY/bin/activate` or other)
 3. ```pip install -r requirements.txt```
+4. run it ```python main.py```
 
 # TODO:
 ~~add pretty font~~
