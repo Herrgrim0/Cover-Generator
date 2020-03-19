@@ -68,15 +68,18 @@ class AlbumGenerator:
         start = addr.text.index("thumb") + 6 # index after the word index
         end = addr.text.index("title", start, len(addr.text))
         pic_addr = addr.text[start+7:end-2] # link to the pic page
-        pic_addr = 'https://www.flickr.com/'+ pic_addr
+        pic_addr = 'https://www.flickr.com'+ pic_addr
+
+        print("\n\n\n" + pic_addr + "\n\n\n")
 
         pic = requests.get(pic_addr)
         start = pic.text.index("class=\"low-res-photo\"")
         end = pic.text.index("main-photo is-hidden", start, len(pic.text))
         pic_url = pic.text[start:end-9] # part of the html with the pic link
         pic_url = pic_url.split("src=\"")[1]
+        pic_url = "https:" + pic_url
 
-        print("\n\n\n"+pic_url+"\n\n\n")
+        print("\n\n\n" + pic_url + "\n\n\n")
 
         if not os.path.exists("images"):
             os.makedirs("images")
