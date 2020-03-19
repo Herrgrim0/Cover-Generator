@@ -101,7 +101,7 @@ class AlbumGenerator:
         background.paste(album_cover, offset)
 
 
-        self.album_url = str(self.band_name)+"-"+str(self.album_name)+'.jpg'
+        self.album_url = "cover/" + str(self.band_name)+"-"+str(self.album_name)+'.jpg'
 
         background.save(str(self.album_url))
         background.close()
@@ -137,6 +137,9 @@ class AlbumGenerator:
         fonts = list(filter(lambda x: ".ttf" in x, archive.namelist()))
         font_nbr = random.randint(0, len(fonts))
         self.cover_font = archive.extract(fonts[font_nbr])
+    
+    def get_album_url(self):
+        return self.album_url
 
 
     def display(self):
