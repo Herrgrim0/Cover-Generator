@@ -9,7 +9,7 @@ def index():
     Album = AlbumGenerator()
     Album.create_album()
     page_title = str(Album)
-    page_image = "cover/" + Album.get_album_url()
+    page_image = "/static/" + Album.get_album_url()
 
     data = {'title': page_title, 'cover': page_image}
 
