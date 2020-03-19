@@ -70,7 +70,7 @@ class AlbumGenerator:
         pic_addr = addr.text[start+7:end-2] # link to the pic page
         pic_addr = 'https://www.flickr.com'+ pic_addr
 
-        print("\n\n\n" + pic_addr + "\n\n\n")
+        # print("\n\n\n" + pic_addr + "\n\n\n")
 
         pic = requests.get(pic_addr)
         start = pic.text.index("class=\"low-res-photo\"")
@@ -79,7 +79,7 @@ class AlbumGenerator:
         pic_url = pic_url.split("src=\"")[1]
         pic_url = "https:" + pic_url
 
-        print("\n\n\n" + pic_url + "\n\n\n")
+        # print("\n\n\n" + pic_url + "\n\n\n")
 
         if not os.path.exists("images"):
             os.makedirs("images")
@@ -89,21 +89,46 @@ class AlbumGenerator:
 
     def create_album_cover(self):
         print("creating album cover...")
-        im = Image.open(str(self.cover))
+        album_cover = Image.open(str(self.cover))
         width, height = im.size
         max_size = min(width, height)
-        im = im.crop((0, 0, max_size, max_size))
-        font = ImageFont.truetype(str(self.cover_font), 15)
+        album_cover = album_cover.crop((0, 0, max_size, max_size))
+
+        background = self.create_background(max_size)
+        bg_size= background.size[0]
+
+        offset = ((bg_size - max_size) // 2, (bg_size - max_size) // 2) # center im
+        background.paste(album_cover, offset)
+
+
         self.album_url = str(self.band_name)+"-"+str(self.album_name)+'.jpg'
 
-        ImageDraw.Draw(im).text((5, 5), str(self.band_name), (0, 0, 0), font=font)
-        ImageDraw.Draw(im).text((100, 100), str(self.album_name), (0, 0, 0), font=font)
-
-        im.save(str(self.album_url))
+        background.save(str(self.album_url))
+        background.close()
         im.close()
+
+    def create_background(self, cover_size):
+        """ create a background 100 pixel bigger with band and title
+            param: cover_size, int representing size of cover picture
+            return: background, Image object
+        """
+        background = Image.new('RGB', (cover_size + 100, cover_size + 100), color = 'black')
+
+        font = ImageFont.truetype(str(self.cover_font), 15)
+
+        ImageDraw.Draw(background).text((5, 5), str(self.band_name), (255, 255, 255), font=font)
+        ImageDraw.Draw(background).text((cover_size / 2, cover_size +50), 
+                                         str(self.album_name), 
+                                         (255, 255, 255), 
+                                         font=font)
+        
+        return background
 
 
     def get_cover_font(self):
+        """open and decompress font zipfile, choose a random font
+           and set the member font
+        """
         if not os.path.exists("fonts"):
             os.makedirs("fonts")
             font = wget.download(FONT_URL, out="./fonts")
