@@ -14,6 +14,7 @@ import os
 import random
 import zipfile
 from PIL import Image, ImageFont, ImageDraw
+from bs4 import BeautifulSoup
 
 WIKI_URL = "http://en.wikipedia.org/w/index.php?title=Special:Random"
 QUOTATION_URL = "http://www.quotationspage.com/random.php"
@@ -34,35 +35,25 @@ class AlbumGenerator:
     def get_band_name(self):
         """Get title of a random wikipedia page"""
         print("parsing band name...")
+
         url = requests.get(WIKI_URL)
-
-        # find title tags of the pages and isolate its content,
-        # + 6 remove title (see how index() works)
-        start = url.text.index("title") + 6
-        end = url.text.index("<", start, len(url.text))
-
-        band_name = url.text[start:end]
-        band_name = band_name.split("-")[0]
-        self.band_name = band_name.strip(" ")
+        html_page = url.text
+        soup = BeautifulSoup(html_page, 'html.parser')
+        self.band_name = soup.title.string.split("-", 1)[0]
 
     def get_album_name(self):
         """Get random beginning of a quotation"""
         print("parsing album name...")
+
         album_name = requests.get(QUOTATION_URL)
+        html_page = album_name.text
+        soup = BeautifulSoup(html_page, 'html.parser')
+        album_name = soup.find("dt").text  # tag englobing quote
 
-        # find quote tags and isolate its content
-        start = album_name.text.index("\"/quote/")
-        start = album_name.text.index(">", start, len(album_name.text)) + 1
-        end = album_name.text.index("</a>", start, len(album_name.text))
+        if len(album_name.split()) > 4:
+            album_name = ' '.join(album_name.split()[0:4])
 
-        album_name = album_name.text[start:end].split()
-
-        if len(album_name) > 4:
-            album_name = album_name[0:4]
-
-        re.sub(r'\W+', '', album_name[len(album_name)-1])
-
-        self.album_name = ' '.join(album_name)
+        self.album_name = album_name
 
     def __str__(self):
         return "{} - {}".format(self.band_name, self.album_name)
