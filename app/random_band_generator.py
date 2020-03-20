@@ -8,7 +8,6 @@ date: 02/10/2018
 """
 
 import requests
-import re
 import wget
 import os
 import random
@@ -61,23 +60,29 @@ class AlbumGenerator:
     def get_cover(self):
         """Download random pics on Flickr"""
         print("search and download album cover")
-        addr = requests.get(FLICKR_URL)
-        start = addr.text.index("thumb") + 6  # index after the word index
-        end = addr.text.index("title", start, len(addr.text))
-        pic_addr = addr.text[start+7:end-2]  # link to the pic page
-        pic_addr = 'https://www.flickr.com' + pic_addr
+        webpage = requests.get(FLICKR_URL)
+        webpage = webpage.text
 
-        pic = requests.get(pic_addr)
-        start = pic.text.index("class=\"low-res-photo\"")
-        end = pic.text.index("main-photo is-hidden", start, len(pic.text))
-        pic_url = pic.text[start:end-9]  # part of the html with the pic link
-        pic_url = pic_url.split("src=\"")[1]
+        soup = BeautifulSoup(webpage, 'html.parser')
+
+        # find tag where pic is in and collect url to the original pic
+        link = soup.find('td', class_="Owner")
+        link = link.find('a').attrs["href"]
+
+        pic_addr = 'https://www.flickr.com' + link
+        webpage = requests.get(pic_addr)
+        webpage = webpage.text
+
+        soup = BeautifulSoup(webpage, 'html.parser')
+        pic_url = soup.find(class_="low-res-photo")
+        pic_url = pic_url.attrs["src"]
+
         pic_url = "https:" + pic_url
 
-        if not os.path.exists("images"):
-            os.makedirs("images")
+        if not os.path.exists("./app/images"):
+            os.makedirs("./app/images")
 
-        self.cover = wget.download(pic_url, out="./images")
+        self.cover = wget.download(pic_url, out="./app/images")
 
     def create_album_cover(self):
         print("creating album cover...")
