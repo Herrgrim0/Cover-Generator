@@ -14,6 +14,7 @@ import random
 import zipfile
 from PIL import Image, ImageFont, ImageDraw
 from bs4 import BeautifulSoup
+import string
 
 WIKI_URL = "http://en.wikipedia.org/w/index.php?title=Special:Random"
 QUOTATION_URL = "http://www.quotationspage.com/random.php"
@@ -30,6 +31,9 @@ class AlbumGenerator:
         self.cover_font = None
         self.cover = None
         self.album_url = None
+
+    def __str__(self):
+        return "{} - {}".format(self.band_name, self.album_name)
 
     def get_band_name(self):
         """Get title of a random wikipedia page"""
@@ -48,14 +52,9 @@ class AlbumGenerator:
         html_page = album_name.text
         soup = BeautifulSoup(html_page, 'html.parser')
         album_name = soup.find("dt").text  # tag englobing quote
+        print(album_name)
 
-        if len(album_name.split()) > 4:
-            album_name = ' '.join(album_name.split()[0:4])
-
-        self.album_name = album_name
-
-    def __str__(self):
-        return "{} - {}".format(self.band_name, self.album_name)
+        self.album_name = self.choose_album_name(album_name)
 
     def get_cover(self):
         """Download random pics on Flickr"""
@@ -145,11 +144,6 @@ class AlbumGenerator:
     def get_album_url(self):
         return self.album_url
 
-    def display(self):
-        im = Image.open(str(self.album_url))
-        im.show()
-        im.close()
-
     def create_album(self):
         self.get_band_name()
         self.get_album_name()
@@ -157,3 +151,38 @@ class AlbumGenerator:
         self.get_cover()
         self.create_album_cover()
         os.system("rm -rf fonts-master/")
+
+    def reduce_length_by_punctuation(self, album_name):
+        """check if a punctuation sign in the phrase
+            and split the sentence to reduce is length
+            param: string
+            return: string
+        """
+        for i in range(len(album_name)):
+            if album_name[i] in string.punctuation:
+                album_name = album_name[:i]
+                break
+
+        return str(album_name)
+
+    def choose_album_name(self, album_name):
+        """try to choose the best name for the album.
+            the rules is to take the four first words of the
+            quote but it is not always the goof choice.
+        """
+        album_name = album_name.split()
+        if len(album_name) > 10:
+            album_name = album_name[:10]
+
+        album_name = ' '.join(album_name)
+        album_name = self.reduce_length_by_punctuation(album_name)
+
+        if len(album_name.split()) < 6:
+            return str(album_name)
+        else:
+            album_name = album_name.split()
+            if len(album_name[3]) <= 3:
+                print(album_name)
+                return ' '.join(album_name[:5])
+            else:
+                return ' '.join(album_name[:6])
